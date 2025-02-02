@@ -13,7 +13,6 @@ use pocketmine\world\ChunkManager;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\generator\populator\Populator;
 
-// Won't work
 class CavePopulator implements Populator
 {
 
