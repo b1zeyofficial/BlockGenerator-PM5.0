@@ -6,7 +6,7 @@ namespace BlockHorizons\BlockGenerator\populator;
 use BlockHorizons\BlockGenerator\biomes\CustomBiome;
 use BlockHorizons\BlockGenerator\biomes\type\CoveredBiome;
 use BlockHorizons\BlockGenerator\math\CustomRandom;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\utils\Random;
 use pocketmine\world\ChunkManager;
@@ -49,7 +49,6 @@ class CavePopulator implements Populator
 
 		for ($x = $chunkX - $size; $x <= $chunkX + $size; $x++) {
 			for ($z = $chunkZ - $size; $z <= $chunkZ + $size; $z++) {
-				echo 'Hey';
 				$randomX = $x * $this->worldLong1;
 				$randomZ = $z * $this->worldLong2;
 				$this->random->setSeed($randomX ^ $randomZ ^ $this->seed);
@@ -66,7 +65,6 @@ class CavePopulator implements Populator
 		if ($this->random->nextBoundedInt(100) >= self::$caveRarity) $i = 0;
 
 		for ($j = 0; $j < $i; $j++) {
-			echo 'i: ' . PHP_EOL;
 			$x = $chunkX * 16 + $this->random->nextBoundedInt(16);
 
 			if (self::$evenCaveDistribution) {
@@ -80,7 +78,6 @@ class CavePopulator implements Populator
 			$count = self::$caveSystemFrequency;
 			$largeCaveSpawned = false;
 			if ($this->random->nextBoundedInt(100) <= self::$individualCaveRarity) {
-				echo 'Generating individual cave' . PHP_EOL;
 				$this->generateLargeCaveNode($this->random->nextLong(), $world, $chunkX, $chunkZ, $x, $y, $z);
 				$largeCaveSpawned = true;
 			}
@@ -134,7 +131,6 @@ class CavePopulator implements Populator
 		$randomAngel = $localRandom->nextBoundedInt($maxAngle / 2) + $maxAngle / 4;
 		$bigAngel = $localRandom->nextBoundedInt(6) == 0;
 
-		echo 'Angle: ' . $angle . ' < maxAngle: ' . $maxAngle . PHP_EOL;
 		for (; $angle < $maxAngle; $angle++) {
 			$offsetXZ = 1.5 + sin($angle * 3.141593 / $maxAngle) * $radius * 1.0;
 			$offsetY = $offsetXZ * $scale;
@@ -174,17 +170,13 @@ class CavePopulator implements Populator
 			$distanceZ = $z - $realZ;
 			$angelDiff = $maxAngle - $angle;
 			$newRadius = $radius + 2.0 + 16.0;
-			echo 'Checking disatance ...' . PHP_EOL;
 			if ($distanceX * $distanceX + $distanceZ * $distanceZ - $angelDiff * $angelDiff > $newRadius * $newRadius) {
 				return;
 			}
-			echo 'Passed' . PHP_EOL;
 
-			//Boundaries check.
 			if (($x < $realX - 16.0 - $offsetXZ * 2.0) || ($z < $realZ - 16.0 - $offsetXZ * 2.0) || ($x > $realX + 16.0 + $offsetXZ * 2.0) || ($z > $realZ + 16.0 + $offsetXZ * 2.0)) {
 				continue;
 			}
-			echo 'Passed 2' . PHP_EOL;
 
 			$xFrom = floor($x - $offsetXZ) - $chunkX * 16 - 1;
 			$xTo = floor($x + $offsetXZ) - $chunkX * 16 + 1;
@@ -221,9 +213,9 @@ class CavePopulator implements Populator
 					for ($yy = $yTo + 1; ($yy >= $yFrom - 1); $yy--) {
 						if ($yy >= 0 && $yy < $this->worldHeightCap) {
 							$block = $world->getBlockAt((int)$xx + $baseX, (int)$yy, (int)$zz + $baseZ);
-							if ($block->getId() === BlockLegacyIds::WATER || $block->getId() == BlockLegacyIds::STILL_WATER) {
-								$waterFound = true;
-							}
+                            if ($block->getTypeId() === VanillaBlocks::WATER()->getTypeId()) {
+                                $waterFound = true;
+                            }
 							if (($yy != $yFrom - 1) && ($xx != $xFrom) && ($xx != $xTo - 1) && ($zz != $zFrom) && ($zz != $zTo - 1))
 								$yy = $yFrom;
 						}
@@ -248,22 +240,21 @@ class CavePopulator implements Populator
 						for ($yy = $yTo; $yy > $yFrom; $yy--) {
 							$modY = (($yy - 1) + 0.5 - $y) / $offsetY;
 							if (($modY > -0.7) && ($modX * $modX + $modY * $modY + $modZ * $modZ < 1.0)) {
-								$biome = CustomBiome::getBiome($chunk->getBiomeId((int)$xx, (int)$zz));
+								$biome = CustomBiome::getBiome($chunk->getBiomeId((int)$xx, ((int)$yy), ((int)$zz)));
 								if (!($biome instanceof CoveredBiome)) {
 									continue;
 								}
 
 								$block = $world->getBlockAt((int)$xx + $baseX, (int)$yy, (int)$zz + $baseZ);
-								if ($block->getId() === BlockLegacyIds::GRASS || $block->getId() === BlockLegacyIds::MYCELIUM) {
+								if ($block->getTypeId() === BlockTypeIds::GRASS || $block->getTypeId() === BlockTypeIds::MYCELIUM) {
 									$grassFound = true;
 								}
-								echo 'Setting blocks ...' . PHP_EOL;
 								if ($yy - 1 < 10) {
 									$world->setBlockAt((int)$xx + $baseX, (int)$yy, (int)$zz + $baseZ, VanillaBlocks::LAVA());
 								} else {
 									$world->setBlockAt((int)$xx + $baseX, (int)$yy, (int)$zz + $baseZ, VanillaBlocks::AIR());
 
-									if ($grassFound && ($world->getBlockAt((int)$xx + $baseX, (int)$yy - 1, (int)$zz + $baseZ)->getId() === BlockLegacyIds::DIRT)) {
+									if ($grassFound && ($world->getBlockAt((int)$xx + $baseX, (int)$yy - 1, (int)$zz + $baseZ)->getTypeId() === BlockTypeIds::DIRT)) {
 										$world->setBlockAt((int)$xx + $baseX, (int)$yy - 1, (int)+$baseZ, $biome->getSurfaceBlock((int)$yy - 1));
 									}
 								}

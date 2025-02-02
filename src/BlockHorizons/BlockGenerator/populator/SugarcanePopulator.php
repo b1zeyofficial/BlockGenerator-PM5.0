@@ -7,7 +7,7 @@ use BlockHorizons\BlockGenerator\populator\helper\EnsureBelow;
 use BlockHorizons\BlockGenerator\populator\helper\EnsureCover;
 use BlockHorizons\BlockGenerator\populator\helper\EnsureGrassBelow;
 use pocketmine\block\Block;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
@@ -24,7 +24,7 @@ class SugarcanePopulator extends SurfaceBlockPopulator
 				$y = $this->getHighestWorkableBlock($world, $x, $z);
 				if ($y < 0) break;
 
-				if ($world->getBlockAt($x + $i, $y, $z + $j)->getId() !== BlockLegacyIds::SAND) {
+				if ($world->getBlockAt($x + $i, $y, $z + $j)->getTypeId() !== BlockTypeIds::SAND) {
 					break;
 				}
 			}
@@ -45,8 +45,8 @@ class SugarcanePopulator extends SurfaceBlockPopulator
 		for ($i = $x - 4; $i < ($x + 4); $i++) {
 			for ($j = $z - 4; $j < ($z + 4); $j++) {
 				if (!$i || !$j || $i > 15 || $j > 15) continue; // edge of chunk
-				$b = $world->getBlockAt($i, $y, $j)->getId();
-				if ($b === BlockLegacyIds::WATER || $b === BlockLegacyIds::STILL_WATER) {
+				$b = $world->getBlockAt($i, $y, $j)->getTypeId();
+				if ($b === BlockTypeIds::WATER) {
 					$count++;
 				}
 				if ($count > 10) {

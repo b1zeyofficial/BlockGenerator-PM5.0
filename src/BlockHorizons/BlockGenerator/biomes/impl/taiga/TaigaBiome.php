@@ -5,7 +5,7 @@ namespace BlockHorizons\BlockGenerator\biomes\impl\taiga;
 
 use BlockHorizons\BlockGenerator\biomes\type\GrassyBiome;
 use BlockHorizons\BlockGenerator\populator\TreePopulator;
-use pocketmine\block\utils\TreeType;
+use pocketmine\world\generator\object\TreeType;
 
 class TaigaBiome extends GrassyBiome
 {

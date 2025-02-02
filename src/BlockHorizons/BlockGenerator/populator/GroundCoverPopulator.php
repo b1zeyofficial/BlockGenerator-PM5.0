@@ -5,7 +5,7 @@ namespace BlockHorizons\BlockGenerator\populator;
 
 use BlockHorizons\BlockGenerator\biomes\CustomBiome;
 use BlockHorizons\BlockGenerator\biomes\type\CoveredBiome;
-use pocketmine\block\VanillaBlocks;
+use pocketmine\block\{Air, VanillaBlocks};
 use pocketmine\utils\Random;
 use pocketmine\world\ChunkManager;
 use pocketmine\world\format\Chunk;
@@ -25,7 +25,7 @@ class GroundCoverPopulator implements Populator
 			for ($z = 0; $z < 16; ++$z) {
 				$y = 254;
 
-				$biome = CustomBiome::getBiome($chunk->getBiomeId($x, $z));
+				$biome = CustomBiome::getBiome($chunk->getBiomeId($x, 0, $z));
 				$realX = $baseX + $x;
 				$realZ = $baseZ + $z;
 
@@ -36,7 +36,7 @@ class GroundCoverPopulator implements Populator
 
 				while (($y = $this->getNextStone($chunk, $x, $y, $z)) >= 0) {
 
-					if (($coverBlock = $biome->getCoverBlock($y))->getId() > 0) {
+					if (($coverBlock = $biome->getCoverBlock($y)) instanceof Air) {
 						$world->setBlockAt($realX, $y + 1, $realZ, $coverBlock);
 					}
 					$maxSurfaceDepth = max(min(
@@ -70,7 +70,7 @@ class GroundCoverPopulator implements Populator
 
 	private function getNextStone(Chunk $chunk, int $x, int $y, int $z): int
 	{
-		for (; $y >= 0 && $chunk->getFullBlock($x, $y, $z) !== VanillaBlocks::STONE()->getFullId(); $y--) {
+		for (; $y >= 0 && $chunk->getBlockStateId($x, $y, $z) !== VanillaBlocks::STONE()->getStateId(); $y--) {
 			//
 		}
 		return $y;
@@ -78,7 +78,7 @@ class GroundCoverPopulator implements Populator
 
 	private function getNextAir(Chunk $chunk, int $x, int $y, int $z): int
 	{
-		for (; $y >= 0 && $chunk->getFullBlock($x, $y, $z) !== VanillaBlocks::AIR()->getFullId(); $y--) {
+		for (; $y >= 0 && $chunk->getBlockStateId($x, $y, $z) !== VanillaBlocks::AIR()->getStateId(); $y--) {
 			//
 		}
 		return $y;

@@ -5,8 +5,8 @@ namespace BlockHorizons\BlockGenerator\populator;
 
 use BlockHorizons\BlockGenerator\object\BigSpruceTree;
 use BlockHorizons\BlockGenerator\object\DarkOakTree;
-use pocketmine\block\BlockLegacyIds;
-use pocketmine\block\utils\TreeType;
+use pocketmine\block\BlockTypeIds;
+use pocketmine\world\generator\object\TreeType;
 use pocketmine\utils\Random;
 use pocketmine\world\ChunkManager;
 use pocketmine\world\format\Chunk;
@@ -73,10 +73,10 @@ class TreePopulator extends PopulatorCount
 	private function getHighestWorkableBlock(ChunkManager $world, int $x, int $z): int
 	{
 		for ($y = 254; $y > 0; --$y) {
-			$b = $world->getBlockAt($x, $y, $z)->getId();
-			if ($b === BlockLegacyIds::DIRT || $b === BlockLegacyIds::GRASS || $b === BlockLegacyIds::TALL_GRASS) {
+			$b = $world->getBlockAt($x, $y, $z)->getTypeId();
+			if ($b === BlockTypeIds::DIRT || $b === BlockTypeIds::GRASS || $b === BlockTypeIds::TALL_GRASS) {
 				break;
-			} elseif ($b !== BlockLegacyIds::AIR && $b !== BlockLegacyIds::SNOW_LAYER) {
+			} elseif ($b !== BlockTypeIds::AIR && $b !== BlockTypeIds::SNOW_LAYER) {
 				return -1;
 			}
 		}

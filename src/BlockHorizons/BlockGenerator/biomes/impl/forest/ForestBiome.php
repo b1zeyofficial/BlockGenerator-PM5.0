@@ -5,7 +5,7 @@ namespace BlockHorizons\BlockGenerator\biomes\impl\forest;
 
 use BlockHorizons\BlockGenerator\biomes\type\GrassyBiome;
 use BlockHorizons\BlockGenerator\populator\TreePopulator;
-use pocketmine\block\utils\TreeType;
+use pocketmine\world\generator\object\TreeType;
 
 class ForestBiome extends GrassyBiome
 {

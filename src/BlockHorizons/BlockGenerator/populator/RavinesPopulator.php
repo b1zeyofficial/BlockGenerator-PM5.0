@@ -4,33 +4,35 @@ namespace BlockHorizons\BlockGenerator\populator;
 
 use BlockHorizons\BlockGenerator\math\CustomRandom;
 use pocketmine\block\Block;
-use pocketmine\level\ChunkManager;
-use pocketmine\level\format\Chunk;
-use pocketmine\level\generator\populator\Populator;
+use pocketmine\block\BlockTypeIds;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\world\ChunkManager;
+use pocketmine\world\format\Chunk;
+use pocketmine\world\generator\populator\Populator;
 use pocketmine\utils\Random;
+use pocketmine\world\SimpleChunkManager;
+use pocketmine\world\World;
 
-class RavinesPopulator extends Populator
+class RavinesPopulator implements Populator
 {
 
 	protected static $replaceable = [
-		Block::GRASS => true,
-		Block::DIRT => true,
-		Block::STONE => true,
-		Block::IRON_ORE => true,
-		Block::COAL_ORE => true,
-		Block::DIAMOND_ORE => true,
-		Block::LAPIS_ORE => true,
-		Block::GOLD_ORE => true,
-		Block::EMERALD_ORE => true,
-		Block::GRAVEL => true
+		BlockTypeIds::GRASS => true,
+        BlockTypeIds::DIRT => true,
+        BlockTypeIds::STONE => true,
+        BlockTypeIds::IRON_ORE => true,
+        BlockTypeIds::COAL_ORE => true,
+        BlockTypeIds::DIAMOND_ORE => true,
+        BlockTypeIds::LAPIS_LAZULI_ORE => true,
+        BlockTypeIds::GOLD_ORE => true,
+        BlockTypeIds::EMERALD_ORE => true,
+        BlockTypeIds::GRAVEL => true
 	];
 
 	protected $checkAreaSize = 8;
 
 	protected $random;
-	protected $worldLong1;
-	protected $worldLong2;
-
+    public World $chunkHash;
 	protected $ravineRarity = 2;
 	protected $ravineMinAltitude = 20;
 	protected $ravineMaxAltitude = 70;
@@ -43,23 +45,26 @@ class RavinesPopulator extends Populator
 
 	protected $a = []; // 1024
 
-	public function populate(ChunkManager $level, int $chunkX, int $chunkZ, Random $random): void
-	{
-		$this->random = new CustomRandom();
-		$this->random->setSeed($level->getSeed());
-		$worldLong1 = $this->random->nextLong();
-		$worldLong2 = $this->random->nextLong();
+    public function populate(ChunkManager $world, int $chunkX, int $chunkZ, Random $random): void
+    {
+        $this->random = new CustomRandom();
 
-		$i = $this->checkAreaSize;
+        $seed = 27594263;
+        $this->random->setSeed($seed);
+        $worldLong1 = $this->random->nextLong();
+        $worldLong2 = $this->random->nextLong();
 
-		for ($x = $chunkX - $i; $x <= $chunkX + $i; $x++)
-			for ($z = $chunkZ - $i; $z <= $chunkZ + $i; $z++) {
-				$l3 = $x * $worldLong1;
-				$l4 = $z * $worldLong2;
-				$this->random->setSeed($l3 ^ $l4 ^ $level->getSeed());
-				$this->generateChunk($chunkX, $chunkZ, $level->getChunk($chunkX, $chunkZ));
-			}
-	}
+        $i = $this->checkAreaSize;
+
+        for ($x = $chunkX - $i; $x <= $chunkX + $i; $x++) {
+            for ($z = $chunkZ - $i; $z <= $chunkZ + $i; $z++) {
+                $l3 = $x * $worldLong1;
+                $l4 = $z * $worldLong2;
+                $this->random->setSeed($l3 ^ $l4 ^ $seed);
+                $this->generateChunk($chunkX, $chunkZ, $world->getChunk($chunkX, $chunkZ));
+            }
+        }
+    }
 
 	protected function generateChunk(int $chunkX, int $chunkZ, Chunk $generatingChunkBuffer): void
 	{
@@ -77,7 +82,7 @@ class RavinesPopulator extends Populator
 
 			$size = self::numberInRange($this->random, $this->ravineMinLength, $this->ravineMaxLength);
 
-			$this->createRavine($this->random->nextLong(), $generatingChunkBuffer, $d1, $d2, $d3, $f3, $f1, $f2, $size, $this->ravineDepth);
+			$this->createRavine($this->random->nextLong(), $generatingChunkBuffer, $d1, $d2, $d3, $f3, $f1, $f2, $size, $this->ravineDepth, $chunkX, $chunkZ);
 		}
 	}
 
@@ -86,12 +91,12 @@ class RavinesPopulator extends Populator
 		return $min + $random->nextBoundedInt($max - $min + 1);
 	}
 
-	protected function createRavine(int $paramLong, Chunk $generatingChunkBuffer, float $paramDouble1, float $paramDouble2, float $paramDouble3, float $paramFloat1, float $paramFloat2, float $paramFloat3, int $size, float $paramDouble4)
+	protected function createRavine(int $paramLong, Chunk $generatingChunkBuffer, float $paramDouble1, float $paramDouble2, float $paramDouble3, float $paramFloat1, float $paramFloat2, float $paramFloat3, int $size, float $paramDouble4, int $chunkX, int $chunkZ)
 	{
 		$localRandom = new CustomRandom($paramLong);
 
-		$chunkX = $generatingChunkBuffer->getX();
-		$chunkZ = $generatingChunkBuffer->getZ();
+        $chunkHash = World::chunkHash($chunkX, $chunkZ);
+        World::getXZ($chunkHash, $chunkX, $chunkZ);
 
 		$d1 = $chunkX * 16 + 8;
 		$d2 = $chunkZ * 16 + 8;
@@ -177,9 +182,9 @@ class RavinesPopulator extends Populator
 						if ($localY < 0)
 							continue;
 						if ($localY < $this->worldHeightCap) {
-							$materialAtPosition = $generatingChunkBuffer->getBlockId($localX, $localY, $localZ);
-							if ($materialAtPosition === Block::WATER
-								|| $materialAtPosition === Block::STILL_WATER) {
+							$materialAtPosition = $generatingChunkBuffer->getBlockStateId($localX, $localY, $localZ);
+							if ($materialAtPosition === BlockTypeIds::WATER
+								|| $materialAtPosition === VanillaBlocks::WATER()) {
 								$i4 = 1;
 							}
 							if (($localY != $maxY - 1) && ($localX != $k) && ($localX != $m - 1) && ($localZ != $i2) && ($localZ != $i3 - 1))
@@ -199,12 +204,12 @@ class RavinesPopulator extends Populator
 						for ($localY = $minY; $localY >= $maxY; $localY--) {
 							$d11 = (($localY - 1) + 0.5 - $paramDouble2) / $d4;
 							if (($d9 * $d9 + $d10 * $d10) * $this->a[$localY - 1] + $d11 * $d11 / 6.0 < 1.0) {
-								$material = $generatingChunkBuffer->getBlockId($localX, $localY, $localZ);
+								$material = $generatingChunkBuffer->getBlockStateId($localX, $localY, $localZ);
 								if (self::canBeReplaced($material)) {
 									if ($localY - 1 < 10) {
-										$generatingChunkBuffer->setBlock($localX, $localY, $localZ, Block::LAVA);
+										$generatingChunkBuffer->setBlockStateId($localX, $localY, $localZ, BlockTypeIds::LAVA);
 									} else {
-										$generatingChunkBuffer->setBlock($localX, $localY, $localZ, Block::AIR);
+										$generatingChunkBuffer->setBlockStateId($localX, $localY, $localZ, BlockTypeIds::AIR);
 									}
 								}
 							}

@@ -11,6 +11,7 @@ use BlockHorizons\BlockGenerator\noise\NoiseGeneratorOctaves;
 use BlockHorizons\BlockGenerator\populator\BedrockPopulator;
 use BlockHorizons\BlockGenerator\populator\CavePopulator;
 use BlockHorizons\BlockGenerator\populator\GroundCoverPopulator;
+use BlockHorizons\BlockGenerator\populator\RavinesPopulator;
 use JetBrains\PhpStorm\Pure;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;
@@ -58,8 +59,9 @@ class BlockGenerator extends CustomGenerator
 	private float $localSeed1;
 
 	private float $localSeed2;
+    protected RavinesPopulator $ravinePop;
 
-	public function __construct()
+    public function __construct()
 	{
 		parent::__construct();
 
@@ -118,11 +120,11 @@ class BlockGenerator extends CustomGenerator
 		]);
 		$this->populators[] = $ores;
 
-//		$this->populators[] = new CavePopulator($this->seed);
+		$this->populators[] = new CavePopulator($this->seed);
 
-//        $ravines = new RavinesPopulator();
-//        $this->populators[] = $ravines;
-//        $this->ravinePop = $ravines;
+        $ravines = new RavinesPopulator();
+        $this->populators[] = $ravines;
+        $this->ravinePop = $ravines;
 		CustomBiome::init();
 	}
 
@@ -130,7 +132,7 @@ class BlockGenerator extends CustomGenerator
 	{
 		$baseX = $chunkX * Chunk::EDGE_LENGTH;
 		$baseZ = $chunkZ * Chunk::EDGE_LENGTH;
-		$this->random->setSeed($chunkX * $this->localSeed1 ^ $chunkZ * $this->localSeed2 ^ $this->seed);
+		$this->random->setSeed(intval($chunkX * $this->localSeed1) ^ intval($chunkZ * $this->localSeed2) ^ $this->seed);
 
 		$chunk = $world->getChunk($chunkX, $chunkZ);
 
@@ -283,17 +285,17 @@ class BlockGenerator extends CustomGenerator
 
 							for ($xIn = 0; $xIn < 4; ++$xIn) {
 								if (($scaleZ2 += $scaleZ) > 0.0) {
-									$chunk->setFullBlock(
+									$chunk->setBlockStateId(
 										x: $xSeg * 4 + $zIn,
 										y: $ySeg * 8 + $yIn,
 										z: $zSeg * 4 + $xIn,
-										block: ($biome instanceof CoveredBiome ? $biome->getStoneBlock() : VanillaBlocks::STONE())->getFullId());
+										block: ($biome instanceof CoveredBiome ? $biome->getStoneBlock() : VanillaBlocks::STONE())->getStateId());
 								} elseif ($ySeg * 8 + $yIn <= $this->seaHeight) {
-									$chunk->setFullBlock(
+									$chunk->setBlockStateId(
 										x: $xSeg * 4 + $zIn,
 										y: $ySeg * 8 + $yIn,
 										z: $zSeg * 4 + $xIn,
-										block: VanillaBlocks::WATER()->getFullId()
+										block: VanillaBlocks::WATER()->getStateId()
 									);
 								}
 							}
@@ -314,7 +316,7 @@ class BlockGenerator extends CustomGenerator
 		for ($x = 0; $x < 16; $x++) {
 			for ($z = 0; $z < 16; $z++) {
 				$biome = $this->getSelector()->pickBiome($baseX | $x, $baseZ | $z);
-				$chunk->setBiomeId($x, $z, $biome->getId());
+				$chunk->setBiomeId($x, 0, $z, $biome->getId());
 			}
 		}
 
@@ -333,7 +335,7 @@ class BlockGenerator extends CustomGenerator
 			$populator->populate($world, $chunkX, $chunkZ, $this->random);
 		}
 
-		$biome = CustomBiome::getBiome($chunk->getBiomeId(7, 7));
+		$biome = CustomBiome::getBiome($chunk->getBiomeId(7, 0, 7));
 
 		if ($this->settings['populate'] === false) return;
 

@@ -15,7 +15,7 @@ class EnsureBelow
 
 	public static function ensureBelow(int $x, int $y, int $z, Block $block, ChunkManager $world): bool
 	{
-		return $world->getBlockAt($x, $y - 1, $z)->getId() === $block->getId();
+		return $world->getBlockAt($x, $y - 1, $z)->getTypeId() === $block->getTypeId();
 	}
 
 }

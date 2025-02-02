@@ -5,7 +5,7 @@ namespace BlockHorizons\BlockGenerator\biomes\impl\iceplains;
 
 use BlockHorizons\BlockGenerator\biomes\type\SnowyBiome;
 use BlockHorizons\BlockGenerator\populator\TreePopulator;
-use pocketmine\block\utils\TreeType;
+use pocketmine\world\generator\object\TreeType;
 
 class IcePlainsBiome extends SnowyBiome
 {

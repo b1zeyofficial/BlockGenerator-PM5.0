@@ -3,7 +3,9 @@
 namespace BlockHorizons\BlockGenerator\object;
 
 use pocketmine\block\Block;
-use pocketmine\level\ChunkManager;
+use pocketmine\block\BlockTypeIds;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\world\ChunkManager;
 use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
 
@@ -74,7 +76,7 @@ abstract class HugeTree extends CustomTree
 				for ($k = -$j; $k <= $j && $flag; ++$k) {
 					for ($l = -$j; $l <= $j && $flag; ++$l) {
 						$blockPos = $leavesPos->add($k, $i, $l);
-						if ($leavesPos->getY() + $i < 0 || $leavesPos->getY() + $i >= 256 || !$this->canOverride(Block::get($worldIn->getBlockIdAt((int)$blockPos->x, (int)$blockPos->y, (int)$blockPos->z)))) {
+						if ($leavesPos->getY() + $i < 0 || $leavesPos->getY() + $i >= 256 || !$this->canOverride($worldIn->getBlockAt((int)$blockPos->x, (int)$blockPos->y, (int)$blockPos->z))) {
 							$flag = false;
 						}
 					}
@@ -90,9 +92,9 @@ abstract class HugeTree extends CustomTree
 	protected function ensureDirtsUnderneath(Vector3 $pos, ChunkManager $worldIn): bool
 	{
 		$blockpos = $pos->down();
-		$block = $worldIn->getBlockIdAt((int)$blockpos->x, (int)$blockpos->y, (int)$blockpos->z);
+		$block = $worldIn->getBlockAt((int)$blockpos->x, (int)$blockpos->y, (int)$blockpos->z);
 
-		if (($block === Block::GRASS || $block === Block::DIRT) && $pos->getY() >= 2) {
+		if (($block === BlockTypeIds::GRASS || $block === BlockTypeIds::DIRT) && $pos->getY() >= 2) {
 			$this->setDirtAt($worldIn, $blockpos);
 			$this->setDirtAt($worldIn, $blockpos->east());
 			$this->setDirtAt($worldIn, $blockpos->south());
@@ -110,7 +112,7 @@ abstract class HugeTree extends CustomTree
 
 	public function setDirtAt(ChunkManager $level, Vector3 $pos): void
 	{
-		$level->setBlockIdAt($pos->x, $pos->y, $pos->z, Block::DIRT);
+		$level->setBlockAt($pos->x, $pos->y, $pos->z, VanillaBlocks::DIRT());
 	}
 
 	/*
@@ -128,11 +130,18 @@ abstract class HugeTree extends CustomTree
 
 				if ($j * $j + $k * $k <= $i || $l * $l + $i1 * $i1 <= $i || $j * $j + $i1 * $i1 <= $i || $l * $l + $k * $k <= $i) {
 					$blockpos = $layerCenter->add($j, 0, $k);
-					$id = $worldIn->getBlockIdAt((int)$blockpos->x, (int)$blockpos->y, (int)$blockpos->z);
+					$id = $worldIn->getBlockAt((int)$blockpos->x, (int)$blockpos->y, (int)$blockpos->z);
 
-					if ($id === Block::AIR || $id === Block::LEAVES) {
-						$this->setBlockAndNotifyAdequately($worldIn, $blockpos, $this->leavesMetadata);
-					}
+                    if ($id === BlockTypeIds::AIR ||
+                        $id === VanillaBlocks::OAK_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::BIRCH_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::SPRUCE_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::JUNGLE_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::ACACIA_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::DARK_OAK_LEAVES()->getTypeId()) {
+
+                        $this->setBlockAndNotifyAdequately($worldIn, $blockpos, $this->leavesMetadata);
+                    }
 				}
 			}
 		}
@@ -142,11 +151,11 @@ abstract class HugeTree extends CustomTree
 	 * grow leaves in a circle
 	 */
 
-	public function setBlockAndNotifyAdequately(ChunkManager $level, Vector3 $pos, Block $block): void
-	{
-		$level->setBlockIdAt($pos->x, $pos->y, $pos->z, $block->getId());
-		$level->setBlockDataAt($pos->x, $pos->y, $pos->z, $block->getDamage());
-	}
+    public function setBlockAndNotifyAdequately(ChunkManager $level, Vector3 $pos, Block $block): void
+    {
+        $level->setBlockAt($pos->x, $pos->y, $pos->z, $block);
+        $level->setBlockAt($pos->x, $pos->y, $pos->z, $block);
+    }
 
 	protected function growLeavesLayer(ChunkManager $worldIn, Vector3 $layerCenter, int $width)
 	{
@@ -156,9 +165,15 @@ abstract class HugeTree extends CustomTree
 			for ($k = -$width; $k <= $width; ++$k) {
 				if ($j * $j + $k * $k <= $i) {
 					$blockpos = $layerCenter->add($j, 0, $k);
-					$id = $worldIn->getBlockIdAt((int)$blockpos->x, (int)$blockpos->y, (int)$blockpos->z);
+					$id = $worldIn->getBlockAt((int)$blockpos->x, (int)$blockpos->y, (int)$blockpos->z);
 
-					if ($id === Block::AIR || $id === Block::LEAVES) {
+					if ($id === BlockTypeIds::AIR ||
+                        $id === VanillaBlocks::OAK_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::BIRCH_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::SPRUCE_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::JUNGLE_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::ACACIA_LEAVES()->getTypeId() ||
+                        $id === VanillaBlocks::DARK_OAK_LEAVES()->getTypeId()) {
 						$this->setBlockAndNotifyAdequately($worldIn, $blockpos, $this->leavesMetadata);
 					}
 				}

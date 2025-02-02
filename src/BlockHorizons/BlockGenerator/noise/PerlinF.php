@@ -36,9 +36,9 @@ class PerlinF extends Noise
 	}
 
 	#[Pure]
-	public function getNoise2D($x, $y): float
+	public function getNoise2D($x, $z): float
 	{
-		return $this->getNoise3D($x, $y, 0);
+		return $this->getNoise3D($x, $z, 0);
 	}
 
 	#[Pure]

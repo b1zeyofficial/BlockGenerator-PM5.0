@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace BlockHorizons\BlockGenerator\biomes\impl\mesa;
 
+use BlockHorizons\BlockGenerator\utils\ItemParse;
 use BlockHorizons\BlockGenerator\biomes\type\CoveredBiome;
 use BlockHorizons\BlockGenerator\math\CustomRandom;
 use BlockHorizons\BlockGenerator\noise\SimplexF;
 use BlockHorizons\BlockGenerator\populator\CactusPopulator;
 use BlockHorizons\BlockGenerator\populator\DeadBushPopulator;
 use pocketmine\block\Block;
-use pocketmine\block\BlockFactory;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\utils\Random;
 
@@ -113,8 +113,8 @@ class MesaBiome extends CoveredBiome
 		} else {
 			$this->currMeta = $this->colorLayer[($y + $this->randY) & 0x3F];
 			return $this->currMeta === -1
-				? BlockFactory::getInstance()->get(172, 0)
-				: BlockFactory::getInstance()->get(159, $this->currMeta);
+				? ItemParse::stringToItem('172:0')->getBlock()
+				: ItemParse::stringToItem('159:'.$this->currMeta)->getBlock();
 		}
 	}
 

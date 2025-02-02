@@ -7,7 +7,7 @@ use BlockHorizons\BlockGenerator\biomes\type\SnowyBiome;
 use BlockHorizons\BlockGenerator\math\CustomRandom;
 use BlockHorizons\BlockGenerator\populator\TreePopulator;
 use pocketmine\block\Block;
-use pocketmine\block\utils\TreeType;
+use pocketmine\world\generator\object\TreeType;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\world\generator\noise\Simplex;
 

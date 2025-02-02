@@ -5,20 +5,21 @@ namespace BlockHorizons\BlockGenerator\populator;
 use BlockHorizons\BlockGenerator\populator\helper\EnsureBelow;
 use BlockHorizons\BlockGenerator\populator\helper\EnsureCover;
 use pocketmine\block\Block;
-use pocketmine\level\format\Chunk;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\world\ChunkManager;
 use pocketmine\utils\Random;
 
 class LilyPadPopulator extends SurfaceBlockPopulator
 {
 
-	protected function canStay(int $x, int $y, int $z, Chunk $chunk): bool
+	protected function canStay(int $x, int $y, int $z, ChunkManager $world): bool
 	{
-		return EnsureCover::ensureCover($x, $y, $z, $chunk) && EnsureBelow::ensureBelow($x, $y, $z, Block::STILL_WATER, $chunk);
+		return EnsureCover::ensureCover($x, $y, $z, $world) && EnsureBelow::ensureBelow($x, $y, $z, VanillaBlocks::WATER(), $world);
 	}
 
-	protected function getBlockId(int $x, int $z, Random $random, Chunk $chunk): int
+	protected function getBlock(int $x, int $z, Random $random, ChunkManager $world): Block
 	{
-		return Block::LILY_PAD;
+		return VanillaBlocks::LILY_PAD();
 	}
 
 }

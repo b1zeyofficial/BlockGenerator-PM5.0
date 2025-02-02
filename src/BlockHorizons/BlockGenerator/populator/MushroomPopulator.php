@@ -5,8 +5,11 @@ namespace BlockHorizons\BlockGenerator\populator;
 
 use BlockHorizons\BlockGenerator\object\mushroom\BigMushroom;
 use pocketmine\block\Block;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
+use pocketmine\world\ChunkManager;
+use pocketmine\world\format\Chunk;
 
 class MushroomPopulator extends PopulatorCount
 {
@@ -34,10 +37,10 @@ class MushroomPopulator extends PopulatorCount
 		$x &= 0xF;
 		$z &= 0xF;
 		for ($y = 254; $y > 0; --$y) {
-			$b = $chunk->getBlockId($x, $y, $z);
-			if ($b === Block::DIRT || $b === Block::GRASS || $b === Block::MYCELIUM) {
+			$b = $chunk->getBlockStateId($x, $y, $z);
+			if ($b === VanillaBlocks::DIRT() || $b === VanillaBlocks::GRASS() || $b === VanillaBlocks::MYCELIUM()) {
 				break;
-			} elseif ($b !== Block::AIR && $b !== Block::SNOW_LAYER) {
+			} elseif ($b !== VanillaBlocks::AIR() && $b !== VanillaBlocks::SNOW_LAYER()) {
 				return -1;
 			}
 		}

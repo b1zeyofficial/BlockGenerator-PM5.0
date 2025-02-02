@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace BlockHorizons\BlockGenerator\biomes\impl\taiga;
 
 use BlockHorizons\BlockGenerator\populator\TreePopulator;
-use pocketmine\block\utils\TreeType;
+use pocketmine\world\generator\object\TreeType;
 
 
 class MegaTaigaBiome extends TaigaBiome

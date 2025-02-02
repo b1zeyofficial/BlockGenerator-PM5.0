@@ -25,10 +25,10 @@ class BedrockPopulator implements Populator
 
 		for ($x = 0; $x < 16; $x++) {
 			for ($z = 0; $z < 16; $z++) {
-				$chunk->setFullBlock($x, 0, $z, $this->bedrock->getFullId());
+				$chunk->setBlockStateId($x, 0, $z, $this->bedrock->getStateId());
 				for ($i = 1; $i < 5; $i++) {
 					if ($random->nextBoundedInt($i) == 0)
-						$chunk->setFullBlock($x, $i, $z, $this->bedrock->getFullId());
+						$chunk->setBlockStateId($x, $i, $z, $this->bedrock->getStateId());
 				}
 			}
 		}

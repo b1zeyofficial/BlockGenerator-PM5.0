@@ -5,20 +5,21 @@ namespace BlockHorizons\BlockGenerator\populator;
 use BlockHorizons\BlockGenerator\populator\helper\EnsureCover;
 use BlockHorizons\BlockGenerator\populator\helper\EnsureGrassBelow;
 use pocketmine\block\Block;
-use pocketmine\level\format\Chunk;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\world\ChunkManager;
 use pocketmine\utils\Random;
 
 class MelonPopulator extends SurfaceBlockPopulator
 {
 
-	protected function canStay(int $x, int $y, int $z, Chunk $chunk): bool
+	protected function canStay(int $x, int $y, int $z, ChunkManager $world): bool
 	{
-		return EnsureCover::ensureCover($x, $y, $z, $chunk) && EnsureGrassBelow::ensureGrassBelow($x, $y, $z, $chunk);
+		return EnsureCover::ensureCover($x, $y, $z, $world) && EnsureGrassBelow::ensureGrassBelow($x, $y, $z, $world);
 	}
 
-	protected function getBlockId(int $x, int $z, Random $random, Chunk $chunk): int
+	protected function getBlock(int $x, int $z, Random $random, ChunkManager $world): Block
 	{
-		return Block::MELON_BLOCK;
+		return VanillaBlocks::MELON();
 	}
 
 }

@@ -60,12 +60,6 @@ class FacingHelper
 			"Up" => self::UP,
 			"Down" => self::DOWN
 		];
-		foreach ($faces as $name => $face) {
-			echo " ---- Face: $name ----" . PHP_EOL;
-			echo " xOffset: " . self::xOffset($face) . PHP_EOL;
-			echo " yOffset: " . self::yOffset($face) . PHP_EOL;
-			echo " zOffset: " . self::zOffset($face) . PHP_EOL;
-		}
 	}
 
 	public static function xOffset(int $face): int

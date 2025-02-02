@@ -3,7 +3,7 @@
 namespace BlockHorizons\BlockGenerator\populator\helper;
 
 use pocketmine\block\Block;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\world\ChunkManager;
 use pocketmine\world\format\Chunk;
 
@@ -11,11 +11,9 @@ class PopulatorHelpers
 {
 
 	const NON_SOLID = [
-		BlockLegacyIds::AIR => true,
-		BlockLegacyIds::LEAVES => true,
-		BlockLegacyIds::LEAVES2 => true,
-		BlockLegacyIds::SNOW_LAYER => false,
-		BlockLegacyIds::TALL_GRASS => true,
+		BlockTypeIds::AIR => true,
+		BlockTypeIds::SNOW_LAYER => false,
+		BlockTypeIds::TALL_GRASS => true,
 	];
 
 	private function __construct()

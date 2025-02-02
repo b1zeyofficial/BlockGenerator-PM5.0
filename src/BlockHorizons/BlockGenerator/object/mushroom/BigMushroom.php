@@ -3,10 +3,9 @@
 namespace BlockHorizons\BlockGenerator\object\mushroom;
 
 use BlockHorizons\BlockGenerator\object\BasicGenerator;
-use pocketmine\block\Block;
-use pocketmine\block\BrownMushroomBlock;
-use pocketmine\block\RedMushroomBlock;
-use pocketmine\level\ChunkManager;
+use pocketmine\block\BlockTypeIds;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\world\ChunkManager;
 use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
 
@@ -44,7 +43,9 @@ class BigMushroom extends BasicGenerator
 			$block = $rand->nextBoolean() ? self::RED : self::BROWN;
 		}
 
-		$mushroom = $block === 0 ? new BrownMushroomBlock() : new RedMushroomBlock();
+        $mushroom = $block === 0 ? VanillaBlocks::BROWN_MUSHROOM() : VanillaBlocks::RED_MUSHROOM();
+
+        $level->setBlockAt($position->getX(), $position->getY(), $position->getZ(), $mushroom);
 
 		$i = $rand->nextBoundedInt(3) + 4;
 
@@ -62,17 +63,22 @@ class BigMushroom extends BasicGenerator
 					$k = 0;
 				}
 
-				$pos = new Vector3();
+                for ($l = $position->getFloorX() - $k; $l <= $position->getX() + $k && $flag; ++$l) {
+                    for ($i1 = $position->getFloorZ() - $k; $i1 <= $position->getZ() + $k && $flag; ++$i1) {
+                        if ($j >= 0 && $j < 256) {
+                            $pos = new Vector3($l, $j, $i1);
 
-				for ($l = $position->getFloorX() - $k; $l <= $position->getX() + $k && $flag; ++$l) {
-					for ($i1 = $position->getFloorZ() - $k; $i1 <= $position->getZ() + $k && $flag; ++$i1) {
-						if ($j >= 0 && $j < 256) {
-							$pos->setComponents($l, $j, $i1);
-							$material = $level->getBlockIdAt($pos->getFloorX(), $pos->getFloorY(), $pos->getFloorZ());
+							$material = $level->getBlockAt($pos->getFloorX(), $pos->getFloorY(), $pos->getFloorZ());
 
-							if ($material !== Block::AIR && $material !== Block::LEAVES) {
-								$flag = false;
-							}
+                            if ($material !== BlockTypeIds::AIR &&
+                                $material !== VanillaBlocks::ACACIA_LEAVES() &&
+                                $material !== VanillaBlocks::BIRCH_LEAVES() &&
+                                $material !== VanillaBlocks::DARK_OAK_LEAVES() &&
+                                $material !== VanillaBlocks::JUNGLE_LEAVES() &&
+                                $material !== VanillaBlocks::OAK_LEAVES() &&
+                                $material !== VanillaBlocks::SPRUCE_LEAVES()) {
+                                $flag = false;
+                            }
 						} else {
 							$flag = false;
 						}
@@ -84,9 +90,9 @@ class BigMushroom extends BasicGenerator
 				return false;
 			} else {
 				$pos2 = $position->down();
-				$block1 = $level->getBlockIdAt($pos2->getFloorX(), $pos2->getFloorY(), $pos2->getFloorZ());
+				$block1 = $level->getBlockAt($pos2->getFloorX(), $pos2->getFloorY(), $pos2->getFloorZ());
 
-				if ($block1 !== Block::DIRT && $block1 !== Block::GRASS && $block1 !== Block::MYCELIUM) {
+				if ($block1 !== BlockTypeIds::DIRT && $block1 !== BlockTypeIds::GRASS && $block1 !== BlockTypeIds::MYCELIUM) {
 					return false;
 				} else {
 					$k2 = $position->getFloorY() + $i;
@@ -174,7 +180,7 @@ class BigMushroom extends BasicGenerator
 								if ($position->getY() >= $position->getY() + $i - 1 || $meta !== self::ALL_INSIDE) {
 									$blockPos = new Vector3($l1, $l2, $i2);
 
-									if (!(Block::get($level->getBlockIdAt($blockPos->x, $blockPos->y, $blockPos->z))->isSolid())) {
+									if (!($level->getBlockAt($blockPos->x, $blockPos->y, $blockPos->z))->isSolid()) {
 										$this->setBlockAndNotifyAdequately($level, $blockPos, $mushroom);
 									}
 								}
@@ -182,14 +188,14 @@ class BigMushroom extends BasicGenerator
 						}
 					}
 
-					for ($i3 = 0; $i3 < $i; ++$i3) {
-						$pos = $position->up($i3);
-						$id = $level->getBlockIdAt($pos->getFloorX(), $pos->getFloorY(), $pos->getFloorZ());
+                    for ($i3 = 0; $i3 < $i; ++$i3) {
+                        $pos = $position->up($i3);
+                        $blockAtPos = $level->getBlockAt($pos->getFloorX(), $pos->getFloorY(), $pos->getFloorZ());
 
-						if (!(Block::get($id)->isSolid())) {
-							$this->setBlockAndNotifyAdequately($level, $pos, Block::get($mushroom->getId(), self::STEM));
-						}
-					}
+                        if (!$blockAtPos->isSolid()) {
+                            $this->setBlockAndNotifyAdequately($level, $pos, $mushroom);
+                        }
+                    }
 
 					return true;
 				}

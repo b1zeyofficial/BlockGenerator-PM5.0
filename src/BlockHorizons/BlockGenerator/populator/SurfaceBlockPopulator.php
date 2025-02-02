@@ -28,7 +28,7 @@ abstract class SurfaceBlockPopulator extends PopulatorCount
 		$y = 0;
 		//start at 254 because we add one afterwards
 		for ($y = 254; $y >= 0; --$y) {
-			if (!PopulatorHelpers::isNonSolid($world->getBlockAt($x, $y, $z)->getId())) {
+			if (!PopulatorHelpers::isNonSolid($world->getBlockAt($x, $y, $z)->getTypeId())) {
 				break;
 			}
 		}
