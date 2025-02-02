@@ -5,7 +5,6 @@ namespace BlockHorizons\BlockGenerator\object;
 
 use BlockHorizons\BlockGenerator\math\FacingHelper;
 use pocketmine\block\Block;
-use pocketmine\block\BlockTypeIds;
 use pocketmine\block\Leaves;
 use pocketmine\block\utils\LeavesType;
 use pocketmine\block\VanillaBlocks;

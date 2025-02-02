@@ -4,26 +4,14 @@ namespace BlockHorizons\BlockGenerator\object;
 
 use pocketmine\block\Block;
 use pocketmine\block\Leaves;
-use pocketmine\block\utils\LeavesType;
 use pocketmine\block\utils\WoodType;
 use pocketmine\block\VanillaBlocks;
-use pocketmine\block\Wood;
 use pocketmine\world\ChunkManager;
 use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
 
 class SwampTree extends CustomTree
 {
-
-	/**
-	 * The metadata value of the wood to use in tree generation.
-	 */
-	private $metaWood = WoodType::OAK;
-
-	/**
-	 * The metadata value of the leaves to use in tree generation.
-	 */
-	private $metaLeaves = WoodType::OAK;
 
 	public function generate(ChunkManager $worldIn, Random $rand, Vector3 $vectorPosition): bool
 	{

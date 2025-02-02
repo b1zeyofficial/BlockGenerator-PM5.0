@@ -3,14 +3,12 @@
 namespace BlockHorizons\BlockGenerator\populator;
 
 use BlockHorizons\BlockGenerator\math\CustomRandom;
-use pocketmine\block\Block;
 use pocketmine\block\BlockTypeIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\world\ChunkManager;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\generator\populator\Populator;
 use pocketmine\utils\Random;
-use pocketmine\world\SimpleChunkManager;
 use pocketmine\world\World;
 
 class RavinesPopulator implements Populator

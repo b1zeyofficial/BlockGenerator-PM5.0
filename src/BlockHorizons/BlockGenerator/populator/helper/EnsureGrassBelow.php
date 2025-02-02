@@ -5,7 +5,6 @@ namespace BlockHorizons\BlockGenerator\populator\helper;
 
 use pocketmine\block\VanillaBlocks;
 use pocketmine\world\ChunkManager;
-use pocketmine\world\format\Chunk;
 
 class EnsureGrassBelow
 {

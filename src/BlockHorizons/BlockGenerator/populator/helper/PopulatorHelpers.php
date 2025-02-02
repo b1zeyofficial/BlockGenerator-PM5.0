@@ -2,10 +2,8 @@
 
 namespace BlockHorizons\BlockGenerator\populator\helper;
 
-use pocketmine\block\Block;
 use pocketmine\block\BlockTypeIds;
 use pocketmine\world\ChunkManager;
-use pocketmine\world\format\Chunk;
 
 class PopulatorHelpers
 {

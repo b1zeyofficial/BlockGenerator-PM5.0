@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace BlockHorizons\BlockGenerator\populator;
 
 use BlockHorizons\BlockGenerator\object\BigSpruceTree;
-use BlockHorizons\BlockGenerator\object\DarkOakTree;
 use pocketmine\block\BlockTypeIds;
 use pocketmine\world\generator\object\TreeType;
 use pocketmine\utils\Random;

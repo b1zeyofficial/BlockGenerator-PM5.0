@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace BlockHorizons\BlockGenerator\populator;
 
 use BlockHorizons\BlockGenerator\object\mushroom\BigMushroom;
-use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\math\Vector3;
 use pocketmine\utils\Random;

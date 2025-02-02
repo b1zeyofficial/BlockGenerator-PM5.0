@@ -5,7 +5,6 @@ namespace BlockHorizons\BlockGenerator\object;
 use BlockHorizons\BlockGenerator\math\FacingHelper;
 use pocketmine\block\Block;
 use pocketmine\block\Leaves;
-use pocketmine\block\UnknownBlock;
 use pocketmine\block\utils\WoodType;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\world\ChunkManager;
@@ -220,7 +219,6 @@ class NewJungleTree extends CustomTree
 
     private function placeCocoa(ChunkManager $worldIn, int $age, Vector3 $pos, int $side): void
     {
-        // Создание блока с нужным состоянием
         $block = VanillaBlocks::COCOA_POD();
 
         $block->age = $age;

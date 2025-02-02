@@ -5,7 +5,6 @@ namespace BlockHorizons\BlockGenerator\biomes\type;
 use BlockHorizons\BlockGenerator\populator\GrassPopulator;
 use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
-use pocketmine\world\generator\populator\TallGrass;
 
 abstract class GrassyBiome extends CoveredBiome
 {
